@@ -11,14 +11,27 @@ jobs:
 
     strategy:
       matrix:
-        service:
-          - api-gateway
-          - auth-service
-          - content-service
-          - course-service
-          - frontend
-          - notification-service
-          - quiz-service
+        include:
+          - name: api-gateway
+            context: ./services/api-gateway
+
+          - name: auth-service
+            context: ./services/auth-service
+
+          - name: content-service
+            context: ./services/content-service
+
+          - name: course-service
+            context: ./services/course-service
+
+          - name: notification-service
+            context: ./services/notification-service
+
+          - name: quiz-service
+            context: ./services/quiz-service
+
+          - name: frontend
+            context: ./frontend/student-ui
 
     steps:
       - name: Checkout
@@ -36,7 +49,7 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@v6
         with:
-          context: ./services/${{ matrix.service }}
-          file: ./services/${{ matrix.service }}/Dockerfile
+          context: ${{ matrix.context }}
+          file: ${{ matrix.context }}/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/edusphere-${{ matrix.service }}:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/edusphere-${{ matrix.name }}:latest
