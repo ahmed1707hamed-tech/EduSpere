@@ -1,0 +1,15 @@
+# Non-sensitive application configuration shared across microservices
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: edusphere
+  labels:
+    app.kubernetes.io/name: app-config
+    app.kubernetes.io/part-of: edusphere
+data:
+  APP_ENV: "production"
+  LOG_LEVEL: "info"
+  DATABASE_HOST: "postgres.edusphere.svc.cluster.local"
+  DATABASE_PORT: "5432"
+  REDIS_HOST: "redis.edusphere.svc.cluster.local"

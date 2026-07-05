@@ -1,0 +1,36 @@
+# Dependencies (installed in builder stage)
+node_modules/
+
+# Build output (rebuilt inside container)
+dist/
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+.env.development
+
+# VCS and IDE
+.git/
+.gitignore
+.idea/
+.vscode/
+*.md
+README*
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Lint and tooling config (not needed to build)
+.oxlintrc.json
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

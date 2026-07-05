@@ -1,0 +1,19 @@
+---
+- name: Ensure project directory exists
+  ansible.builtin.file:
+    path: "{{ project_dir }}"
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: "0755"
+
+- name: Clone or update GitHub repository
+  ansible.builtin.git:
+    repo: "{{ github_repo }}"
+    dest: "{{ project_dir }}"
+    version: "{{ github_branch }}"
+    update: true
+    force: true
+    accept_hostkey: true
+  become: true
+  become_user: ubuntu

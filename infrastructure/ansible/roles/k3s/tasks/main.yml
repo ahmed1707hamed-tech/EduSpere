@@ -1,0 +1,40 @@
+---
+- name: Download K3s install script
+  ansible.builtin.get_url:
+    url: "{{ k3s_install_script_url }}"
+    dest: /tmp/k3s-install.sh
+    mode: "0755"
+
+- name: Install K3s
+  ansible.builtin.command:
+    cmd: /tmp/k3s-install.sh
+    creates: "{{ k3s_install_path }}"
+
+- name: Enable K3s service
+  ansible.builtin.service:
+    name: "{{ k3s_service_name }}"
+    enabled: true
+
+- name: Start K3s service
+  ansible.builtin.service:
+    name: "{{ k3s_service_name }}"
+    state: started
+
+- name: Wait until K3s node becomes Ready
+  ansible.builtin.command:
+    cmd: "{{ k3s_kubectl_command }} get nodes"
+  register: k3s_nodes
+  until: k3s_nodes.rc == 0 and ' Ready ' in k3s_nodes.stdout
+  retries: "{{ k3s_node_ready_retries }}"
+  delay: "{{ k3s_node_ready_delay }}"
+  changed_when: false
+
+- name: Verify K3s nodes
+  ansible.builtin.command:
+    cmd: "{{ k3s_kubectl_command }} get nodes"
+  register: k3s_nodes_verify
+  changed_when: false
+
+- name: Show K3s nodes
+  ansible.builtin.debug:
+    msg: "{{ k3s_nodes_verify.stdout_lines }}"

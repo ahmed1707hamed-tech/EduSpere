@@ -1,0 +1,12 @@
+---
+- name: Prepare EduSphere dev server
+  hosts: edusphere_dev
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: common
+    - role: docker
+    - role: k3s
+    - role: nginx
+    - role: app

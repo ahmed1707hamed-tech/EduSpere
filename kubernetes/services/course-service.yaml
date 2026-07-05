@@ -1,0 +1,19 @@
+# Internal ClusterIP service for course-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: course-service
+  namespace: edusphere
+  labels:
+    app.kubernetes.io/name: course-service
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: edusphere
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: course-service
+  ports:
+    - name: http
+      port: 8000
+      targetPort: http
+      protocol: TCP

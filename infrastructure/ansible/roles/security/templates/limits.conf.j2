@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+# EduSphere system resource limits
+
+{% for limit in system_limits %}
+{{ limit.domain }}    {{ limit.type }}    {{ limit.item }}    {{ limit.value }}
+{% endfor %}

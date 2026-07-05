@@ -1,0 +1,17 @@
+# PersistentVolumeClaim bound by content-service for file uploads
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: content-storage-pvc
+  namespace: edusphere
+  labels:
+    app.kubernetes.io/name: content-service
+    app.kubernetes.io/part-of: edusphere
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 5Gi
+  volumeName: edusphere-content-pv

@@ -1,0 +1,39 @@
+---
+ssh_port: 22
+ssh_permit_root_login: "no"
+ssh_password_authentication: "no"
+ssh_pubkey_authentication: "yes"
+ssh_use_pam: "yes"
+ssh_max_auth_tries: 3
+ssh_client_alive_interval: 300
+ssh_client_alive_count_max: 2
+ssh_allow_users:
+  - ubuntu
+  - "{{ app_user }}"
+
+security_packages:
+  - ufw
+  - fail2ban
+  - unattended-upgrades
+
+ufw_allowed_ports:
+  - { port: "{{ ssh_port }}", proto: tcp, comment: SSH }
+  - { port: "80", proto: tcp, comment: HTTP }
+  - { port: "443", proto: tcp, comment: HTTPS }
+  - { port: "{{ prometheus_port | default(9090) }}", proto: tcp, comment: Prometheus }
+  - { port: "{{ grafana_port | default(3000) }}", proto: tcp, comment: Grafana }
+
+fail2ban_packages:
+  - fail2ban
+
+system_limits:
+  - { domain: "*", type: soft, item: nofile, value: 65536 }
+  - { domain: "*", type: hard, item: nofile, value: 65536 }
+  - { domain: "*", type: soft, item: nproc, value: 65536 }
+  - { domain: "*", type: hard, item: nproc, value: 65536 }
+
+sshd_config_dropin_path: /etc/ssh/sshd_config.d/99-edusphere.conf
+limits_dropin_path: /etc/security/limits.d/99-edusphere.conf
+fail2ban_sshd_logpath: /var/log/auth.log
+fail2ban_local_path: /etc/fail2ban/jail.d/edusphere.local
+unattended_upgrades_config_path: /etc/apt/apt.conf.d/20auto-upgrades

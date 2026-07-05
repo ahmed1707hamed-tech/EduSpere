@@ -1,0 +1,5 @@
+CREATE DATABASE auth_db;
+CREATE DATABASE course_db;
+CREATE DATABASE content_db;
+CREATE DATABASE quiz_db;
+CREATE DATABASE notification_db;

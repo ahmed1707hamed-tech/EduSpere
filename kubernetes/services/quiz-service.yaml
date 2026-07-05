@@ -1,0 +1,19 @@
+# Internal ClusterIP service for quiz-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: quiz-service
+  namespace: edusphere
+  labels:
+    app.kubernetes.io/name: quiz-service
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: edusphere
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: quiz-service
+  ports:
+    - name: http
+      port: 8000
+      targetPort: http
+      protocol: TCP

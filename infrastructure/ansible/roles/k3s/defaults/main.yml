@@ -1,0 +1,7 @@
+---
+k3s_service_name: k3s
+k3s_install_script_url: https://get.k3s.io
+k3s_install_path: /usr/local/bin/k3s
+k3s_kubectl_command: k3s kubectl
+k3s_node_ready_retries: 30
+k3s_node_ready_delay: 10

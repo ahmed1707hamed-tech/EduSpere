@@ -1,0 +1,23 @@
+---
+- name: Install nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+    update_cache: true
+
+- name: Enable nginx service
+  ansible.builtin.service:
+    name: "{{ nginx_service_name }}"
+    enabled: true
+
+- name: Start nginx service
+  ansible.builtin.service:
+    name: "{{ nginx_service_name }}"
+    state: started
+
+- name: Verify nginx service is running
+  ansible.builtin.service:
+    name: "{{ nginx_service_name }}"
+  register: nginx_status
+  failed_when: nginx_status.status.ActiveState != 'active'
+  changed_when: false

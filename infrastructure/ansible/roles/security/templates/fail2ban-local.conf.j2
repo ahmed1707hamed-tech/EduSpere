@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+[DEFAULT]
+bantime = 1h
+findtime = 10m
+maxretry = 5
+backend = systemd
+
+[sshd]
+enabled = true
+port = {{ ssh_port }}
+filter = sshd
+logpath = {{ fail2ban_sshd_logpath }}
+maxretry = 3
+bantime = 24h

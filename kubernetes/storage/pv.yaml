@@ -1,0 +1,18 @@
+# PersistentVolume for user-generated content (k3s local-path compatible)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: edusphere-content-pv
+  labels:
+    app.kubernetes.io/name: edusphere-content
+    app.kubernetes.io/part-of: edusphere
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-path
+  hostPath:
+    path: /var/lib/edusphere/content
+    type: DirectoryOrCreate

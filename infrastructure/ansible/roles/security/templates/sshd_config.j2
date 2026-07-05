@@ -1,0 +1,18 @@
+# {{ ansible_managed }}
+# EduSphere SSH hardening configuration
+
+Port {{ ssh_port }}
+PermitRootLogin {{ ssh_permit_root_login }}
+PasswordAuthentication {{ ssh_password_authentication }}
+PubkeyAuthentication {{ ssh_pubkey_authentication }}
+KbdInteractiveAuthentication no
+UsePAM {{ ssh_use_pam }}
+MaxAuthTries {{ ssh_max_auth_tries }}
+ClientAliveInterval {{ ssh_client_alive_interval }}
+ClientAliveCountMax {{ ssh_client_alive_count_max }}
+AllowUsers {{ ssh_allow_users | join(' ') }}
+X11Forwarding no
+AllowTcpForwarding no
+PermitEmptyPasswords no
+LoginGraceTime 60
+MaxSessions 4

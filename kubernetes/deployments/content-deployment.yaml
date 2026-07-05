@@ -1,0 +1,71 @@
+# Content microservice – handles media and file uploads
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: content-service
+  namespace: edusphere
+  labels:
+    app.kubernetes.io/name: content-service
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: edusphere
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: content-service
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: content-service
+        app.kubernetes.io/component: backend
+        app.kubernetes.io/part-of: edusphere
+    spec:
+      containers:
+        - name: content-service
+          image: your-dockerhub/content-service:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: app-secret
+          volumeMounts:
+            - name: content-storage
+              mountPath: /data/uploads
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: content-storage
+          persistentVolumeClaim:
+            claimName: content-storage-pvc
+      terminationGracePeriodSeconds: 30

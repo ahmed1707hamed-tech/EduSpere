@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  role_name: nginx
+  description: Install nginx on Ubuntu 22.04
+  min_ansible_version: "2.14"
+
+dependencies: []

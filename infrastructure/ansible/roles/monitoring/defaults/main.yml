@@ -1,0 +1,51 @@
+---
+# Monitoring stack defaults
+
+monitoring_dir: "{{ project_dir }}/monitoring"
+monitoring_network: edusphere-monitoring
+monitoring_compose_project: edusphere-monitoring
+
+prometheus_version: v2.55.1
+grafana_version: "11.3.0"
+loki_version: "3.2.1"
+promtail_version: "3.2.1"
+
+prometheus_port: 9090
+grafana_port: 3000
+loki_port: 3100
+
+prometheus_retention: 15d
+grafana_admin_user: admin
+grafana_admin_password: change-me
+
+monitoring_directories:
+  - "{{ monitoring_dir }}"
+  - "{{ monitoring_dir }}/prometheus"
+  - "{{ monitoring_dir }}/loki"
+  - "{{ monitoring_dir }}/promtail"
+  - "{{ monitoring_dir }}/grafana/provisioning/datasources"
+  - "{{ monitoring_dir }}/grafana/provisioning/dashboards"
+  - "{{ monitoring_dir }}/grafana/dashboards"
+
+monitoring_scrape_targets:
+  - job_name: prometheus
+    targets:
+      - localhost:9090
+  - job_name: api-gateway
+    targets:
+      - host.docker.internal:8000
+  - job_name: auth-service
+    targets:
+      - host.docker.internal:8001
+  - job_name: course-service
+    targets:
+      - host.docker.internal:8002
+  - job_name: content-service
+    targets:
+      - host.docker.internal:8003
+  - job_name: quiz-service
+    targets:
+      - host.docker.internal:8004
+  - job_name: notification-service
+    targets:
+      - host.docker.internal:8005

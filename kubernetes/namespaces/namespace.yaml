@@ -1,0 +1,10 @@
+# EduSphere namespace – isolates all LMS workloads
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: edusphere
+  labels:
+    app.kubernetes.io/name: edusphere
+    app.kubernetes.io/part-of: edusphere
+    app.kubernetes.io/managed-by: kubectl
+    environment: production

@@ -1,0 +1,32 @@
+# {{ ansible_managed }}
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: {{ project_name }}-{{ deploy_env }}
+    environment: {{ deploy_env }}
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets:
+          - localhost:9090
+
+  - job_name: edusphere-services
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+{% for target in monitoring_scrape_targets if target.job_name != 'prometheus' %}
+{% for host in target.targets %}
+          - {{ host }}
+{% endfor %}
+{% endfor %}
+        labels:
+          project: {{ project_name }}
+          environment: {{ deploy_env }}
+
+  - job_name: node-exporter
+    static_configs:
+      - targets:
+          - host.docker.internal:9100
+    scrape_interval: 30s

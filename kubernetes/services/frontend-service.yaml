@@ -1,0 +1,19 @@
+# Internal ClusterIP service for frontend
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: edusphere
+  labels:
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/part-of: edusphere
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: frontend
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http
+      protocol: TCP

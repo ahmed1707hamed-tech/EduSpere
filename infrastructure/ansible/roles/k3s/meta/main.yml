@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  role_name: k3s
+  description: Install lightweight K3s for dev
+  min_ansible_version: "2.14"
+
+dependencies: []

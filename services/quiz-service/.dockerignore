@@ -1,0 +1,42 @@
+# Python artifacts
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/*.egg-info/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Tests and dev-only files
+tests/
+**/*_test.py
+**/*test*.py
+pytest.ini
+conftest.py
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+
+# VCS and IDE
+.git/
+.gitignore
+.idea/
+.vscode/
+*.md
+README*
+
+# Docker (not needed inside image)
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# OS
+.DS_Store
+Thumbs.db

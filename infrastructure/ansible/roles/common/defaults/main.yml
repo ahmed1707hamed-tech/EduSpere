@@ -1,0 +1,10 @@
+---
+project_dir: /opt/edusphere
+
+common_packages:
+  - git
+  - curl
+  - wget
+  - unzip
+  - vim
+  - python3

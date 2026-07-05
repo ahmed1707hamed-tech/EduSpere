@@ -1,0 +1,4 @@
+---
+security_sshd_service: ssh
+security_fail2ban_service: fail2ban
+security_ufw_service: ufw
