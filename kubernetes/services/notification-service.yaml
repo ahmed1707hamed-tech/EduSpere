@@ -1,19 +1,19 @@
-# Internal ClusterIP service for content-service
+# Internal ClusterIP service for notification-service
 apiVersion: v1
 kind: Service
 metadata:
-  name: content-service
+  name: notification-service
   namespace: edusphere
   labels:
-    app.kubernetes.io/name: content-service
+    app.kubernetes.io/name: notification-service
     app.kubernetes.io/component: backend
     app.kubernetes.io/part-of: edusphere
 spec:
   type: ClusterIP
   selector:
-    app.kubernetes.io/name: content-service
+    app.kubernetes.io/name: notification-service
   ports:
     - name: http
-      port: 8003
+      port: 8005
       targetPort: http
       protocol: TCP

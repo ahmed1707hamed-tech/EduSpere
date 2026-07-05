@@ -1,4 +1,4 @@
-# PersistentVolumeClaim bound by content-service for file uploads
+# PersistentVolumeClaim for content uploads (k3s local-path dynamic provisioning)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -14,4 +14,3 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  volumeName: edusphere-content-pv

@@ -1,4 +1,4 @@
-# Ingress – routes external traffic to microservices via k3s Traefik or NGINX Ingress
+# Ingress – routes external traffic via k3s Traefik ingress controller
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -8,51 +8,52 @@ metadata:
     app.kubernetes.io/name: edusphere-ingress
     app.kubernetes.io/part-of: edusphere
   annotations:
-    # k3s ships with Traefik; swap to nginx class if using ingress-nginx
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
     - host: edusphere.local
       http:
         paths:
-          # Backend API routes – more specific paths first
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway
+                port:
+                  number: 8000
           - path: /auth
             pathType: Prefix
             backend:
               service:
                 name: auth-service
                 port:
-                  number: 8000
+                  number: 8001
           - path: /course
             pathType: Prefix
             backend:
               service:
                 name: course-service
                 port:
-                  number: 8000
+                  number: 8002
           - path: /content
             pathType: Prefix
             backend:
               service:
                 name: content-service
                 port:
-                  number: 8000
+                  number: 8003
           - path: /quiz
             pathType: Prefix
             backend:
               service:
                 name: quiz-service
                 port:
-                  number: 8000
-          # Frontend catch-all – must be last
+                  number: 8004
           - path: /
             pathType: Prefix
             backend:
               service:
                 name: frontend
                 port:
-                  number: 3000
+                  number: 80

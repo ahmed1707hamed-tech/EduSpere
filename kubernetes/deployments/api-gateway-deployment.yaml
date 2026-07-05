@@ -1,18 +1,18 @@
-# Auth microservice – handles authentication and authorization
+# API Gateway – routes external API traffic to backend microservices
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-service
+  name: api-gateway
   namespace: edusphere
   labels:
-    app.kubernetes.io/name: auth-service
-    app.kubernetes.io/component: backend
+    app.kubernetes.io/name: api-gateway
+    app.kubernetes.io/component: gateway
     app.kubernetes.io/part-of: edusphere
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app.kubernetes.io/name: auth-service
+      app.kubernetes.io/name: api-gateway
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -21,37 +21,27 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: auth-service
-        app.kubernetes.io/component: backend
+        app.kubernetes.io/name: api-gateway
+        app.kubernetes.io/component: gateway
         app.kubernetes.io/part-of: edusphere
     spec:
       containers:
-        - name: auth-service
-          image: ahmed7amed9/edusphere-auth-service:latest
+        - name: api-gateway
+          image: ahmed7amed9/edusphere-api-gateway:latest
           imagePullPolicy: Always
           ports:
             - name: http
-              containerPort: 8001
+              containerPort: 8000
               protocol: TCP
           envFrom:
             - configMapRef:
                 name: app-config
           env:
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: AUTH_DATABASE_URL
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: app-secret
                   key: SECRET_KEY
-            - name: INTERNAL_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: INTERNAL_API_KEY
           resources:
             requests:
               cpu: 100m
@@ -63,7 +53,7 @@ spec:
             httpGet:
               path: /health
               port: http
-            initialDelaySeconds: 40
+            initialDelaySeconds: 20
             periodSeconds: 15
             timeoutSeconds: 5
             failureThreshold: 3
@@ -71,7 +61,7 @@ spec:
             httpGet:
               path: /health
               port: http
-            initialDelaySeconds: 15
+            initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 3

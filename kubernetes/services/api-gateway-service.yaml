@@ -1,19 +1,19 @@
-# Internal ClusterIP service for auth-service
+# Internal ClusterIP service for api-gateway
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-service
+  name: api-gateway
   namespace: edusphere
   labels:
-    app.kubernetes.io/name: auth-service
-    app.kubernetes.io/component: backend
+    app.kubernetes.io/name: api-gateway
+    app.kubernetes.io/component: gateway
     app.kubernetes.io/part-of: edusphere
 spec:
   type: ClusterIP
   selector:
-    app.kubernetes.io/name: auth-service
+    app.kubernetes.io/name: api-gateway
   ports:
     - name: http
-      port: 8001
+      port: 8000
       targetPort: http
       protocol: TCP

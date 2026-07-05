@@ -1,4 +1,4 @@
-# Frontend – student UI served to end users
+# Frontend – student UI served by nginx
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,15 +27,12 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: your-dockerhub/frontend:latest
+          image: ahmed7amed9/edusphere-frontend:latest
           imagePullPolicy: Always
           ports:
             - name: http
-              containerPort: 3000
+              containerPort: 80
               protocol: TCP
-          envFrom:
-            - configMapRef:
-                name: app-config
           resources:
             requests:
               cpu: 50m
@@ -45,17 +42,17 @@ spec:
               memory: 256Mi
           livenessProbe:
             httpGet:
-              path: /
+              path: /health
               port: http
-            initialDelaySeconds: 20
+            initialDelaySeconds: 15
             periodSeconds: 15
             timeoutSeconds: 5
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /
+              path: /health
               port: http
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 3
