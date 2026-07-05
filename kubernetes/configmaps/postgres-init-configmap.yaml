@@ -1,0 +1,17 @@
+# Creates per-service databases on first PostgreSQL startup
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+  namespace: edusphere
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: edusphere
+data:
+  01-init.sql: |
+    CREATE DATABASE auth_db;
+    CREATE DATABASE course_db;
+    CREATE DATABASE content_db;
+    CREATE DATABASE quiz_db;
+    CREATE DATABASE notification_db;
