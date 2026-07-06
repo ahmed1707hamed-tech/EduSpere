@@ -1,0 +1,99 @@
+global:
+  namespace: edusphere
+
+config:
+  create: true
+  name: app-config
+  data:
+    APP_ENV: production
+    LOG_LEVEL: info
+    DATABASE_HOST: postgres.edusphere.svc.cluster.local
+    DATABASE_PORT: "5432"
+    REDIS_HOST: redis.edusphere.svc.cluster.local
+    REDIS_PORT: "6379"
+    REDIS_URL: redis://redis.edusphere.svc.cluster.local:6379/0
+    AUTH_SERVICE_URL: http://auth-service:8001
+    COURSE_SERVICE_URL: http://course-service:8002
+    CONTENT_SERVICE_URL: http://content-service:8003
+    QUIZ_SERVICE_URL: http://quiz-service:8004
+    NOTIFICATION_SERVICE_URL: http://notification-service:8005
+    S3_ENDPOINT_URL: http://minio.edusphere.svc.cluster.local:9000
+    S3_BUCKET: edusphere-content
+    S3_REGION: us-east-1
+
+secret:
+  create: true
+  name: app-secret
+  data:
+    SECRET_KEY: replace-with-a-secure-jwt-key
+    INTERNAL_API_KEY: replace-with-service-to-service-secret
+    DATABASE_USER: postgres
+    DATABASE_PASSWORD: change-me
+    AUTH_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/auth_db
+    COURSE_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/course_db
+    CONTENT_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/content_db
+    QUIZ_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/quiz_db
+    NOTIFICATION_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/notification_db
+    MINIO_ROOT_USER: minioadmin
+    MINIO_ROOT_PASSWORD: change-me-minio-password
+
+ingress:
+  enabled: true
+  className: traefik
+  host: edusphere.local
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+  tls: []
+  paths:
+    - path: /api
+      pathType: Prefix
+      serviceName: api-gateway
+      servicePort: 8000
+    - path: /auth
+      pathType: Prefix
+      serviceName: auth-service
+      servicePort: 8001
+    - path: /course
+      pathType: Prefix
+      serviceName: course-service
+      servicePort: 8002
+    - path: /content
+      pathType: Prefix
+      serviceName: content-service
+      servicePort: 8003
+    - path: /quiz
+      pathType: Prefix
+      serviceName: quiz-service
+      servicePort: 8004
+    - path: /
+      pathType: Prefix
+      serviceName: frontend
+      servicePort: 80
+
+auth-chart:
+  enabled: true
+  config:
+    create: false
+  secret:
+    create: false
+
+course-chart:
+  enabled: true
+  config:
+    create: false
+  secret:
+    create: false
+
+content-chart:
+  enabled: true
+  config:
+    create: false
+  secret:
+    create: false
+
+quiz-chart:
+  enabled: true
+  config:
+    create: false
+  secret:
+    create: false

@@ -1,0 +1,44 @@
+EduSphere has been deployed successfully!
+
+Release: {{ .Release.Name }}
+Namespace: {{ .Release.Namespace }}
+
+Deployed microservices:
+{{- if index .Values "auth-chart" "enabled" }}
+  - auth-service (port 8001)
+{{- end }}
+{{- if index .Values "course-chart" "enabled" }}
+  - course-service (port 8002)
+{{- end }}
+{{- if index .Values "content-chart" "enabled" }}
+  - content-service (port 8003)
+{{- end }}
+{{- if index .Values "quiz-chart" "enabled" }}
+  - quiz-service (port 8004)
+{{- end }}
+
+{{- if .Values.ingress.enabled }}
+
+Access the application at:
+  http://{{ .Values.ingress.host }}
+
+Ingress paths:
+{{- range .Values.ingress.paths }}
+  - {{ .path }} -> {{ .serviceName }}:{{ .servicePort }}
+{{- end }}
+{{- else }}
+
+Ingress is disabled. Use port-forward to access services:
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/auth-service 8001:8001
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/course-service 8002:8002
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/content-service 8003:8003
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/quiz-service 8004:8004
+{{- end }}
+
+Check deployment status:
+  kubectl get deployments --namespace {{ .Release.Namespace }} -l app.kubernetes.io/part-of=edusphere
+
+{{- if .Values.secret.create }}
+
+IMPORTANT: Update secret values in values.yaml before deploying to production.
+{{- end }}

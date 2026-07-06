@@ -1,0 +1,29 @@
+apiVersion: v2
+name: edusphere
+description: Umbrella Helm chart for the EduSphere microservices platform
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - edusphere
+  - microservices
+  - education
+maintainers:
+  - name: EduSphere Team
+dependencies:
+  - name: auth-chart
+    version: 0.1.0
+    repository: "file://../auth-chart"
+    condition: auth-chart.enabled
+  - name: course-chart
+    version: 0.1.0
+    repository: "file://../course-chart"
+    condition: course-chart.enabled
+  - name: content-chart
+    version: 0.1.0
+    repository: "file://../content-chart"
+    condition: content-chart.enabled
+  - name: quiz-chart
+    version: 0.1.0
+    repository: "file://../quiz-chart"
+    condition: quiz-chart.enabled
