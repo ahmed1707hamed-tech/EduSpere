@@ -1,5 +1,6 @@
 global:
   namespace: edusphere
+  storageClass: standard
 
 config:
   create: true
@@ -7,17 +8,17 @@ config:
   data:
     APP_ENV: production
     LOG_LEVEL: info
-    DATABASE_HOST: postgres.edusphere.svc.cluster.local
+    DATABASE_HOST: postgres
     DATABASE_PORT: "5432"
-    REDIS_HOST: redis.edusphere.svc.cluster.local
+    REDIS_HOST: redis
     REDIS_PORT: "6379"
-    REDIS_URL: redis://redis.edusphere.svc.cluster.local:6379/0
+    REDIS_URL: redis://redis:6379/0
     AUTH_SERVICE_URL: http://auth-service:8001
     COURSE_SERVICE_URL: http://course-service:8002
     CONTENT_SERVICE_URL: http://content-service:8003
     QUIZ_SERVICE_URL: http://quiz-service:8004
     NOTIFICATION_SERVICE_URL: http://notification-service:8005
-    S3_ENDPOINT_URL: http://minio.edusphere.svc.cluster.local:9000
+    S3_ENDPOINT_URL: http://minio:9000
     S3_BUCKET: edusphere-content
     S3_REGION: us-east-1
 
@@ -29,20 +30,19 @@ secret:
     INTERNAL_API_KEY: replace-with-service-to-service-secret
     DATABASE_USER: postgres
     DATABASE_PASSWORD: change-me
-    AUTH_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/auth_db
-    COURSE_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/course_db
-    CONTENT_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/content_db
-    QUIZ_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/quiz_db
-    NOTIFICATION_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/notification_db
+    AUTH_DATABASE_URL: postgresql://postgres:change-me@postgres:5432/auth_db
+    COURSE_DATABASE_URL: postgresql://postgres:change-me@postgres:5432/course_db
+    CONTENT_DATABASE_URL: postgresql://postgres:change-me@postgres:5432/content_db
+    QUIZ_DATABASE_URL: postgresql://postgres:change-me@postgres:5432/quiz_db
+    NOTIFICATION_DATABASE_URL: postgresql://postgres:change-me@postgres:5432/notification_db
     MINIO_ROOT_USER: minioadmin
     MINIO_ROOT_PASSWORD: change-me-minio-password
 
 ingress:
   enabled: true
-  className: traefik
+  className: nginx
   host: edusphere.local
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web
+  annotations: {}
   tls: []
   paths:
     - path: /api
@@ -70,6 +70,23 @@ ingress:
       serviceName: frontend
       servicePort: 80
 
+postgres-chart:
+  enabled: true
+  secret:
+    data:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: change-me
+
+redis-chart:
+  enabled: true
+
+minio-chart:
+  enabled: true
+  secret:
+    data:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: change-me-minio-password
+
 auth-chart:
   enabled: true
   config:
@@ -90,6 +107,8 @@ content-chart:
     create: false
   secret:
     create: false
+  persistence:
+    storageClass: standard
 
 quiz-chart:
   enabled: true
@@ -97,3 +116,13 @@ quiz-chart:
     create: false
   secret:
     create: false
+
+gateway-chart:
+  enabled: true
+  config:
+    create: false
+  secret:
+    create: false
+
+frontend-chart:
+  enabled: true

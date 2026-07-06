@@ -2,7 +2,7 @@ apiVersion: v2
 name: edusphere
 description: Umbrella Helm chart for the EduSphere microservices platform
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: "1.0.0"
 keywords:
   - edusphere
@@ -11,6 +11,18 @@ keywords:
 maintainers:
   - name: EduSphere Team
 dependencies:
+  - name: postgres-chart
+    version: 0.1.0
+    repository: "file://../postgres-chart"
+    condition: postgres-chart.enabled
+  - name: redis-chart
+    version: 0.1.0
+    repository: "file://../redis-chart"
+    condition: redis-chart.enabled
+  - name: minio-chart
+    version: 0.1.0
+    repository: "file://../minio-chart"
+    condition: minio-chart.enabled
   - name: auth-chart
     version: 0.1.0
     repository: "file://../auth-chart"
@@ -20,10 +32,18 @@ dependencies:
     repository: "file://../course-chart"
     condition: course-chart.enabled
   - name: content-chart
-    version: 0.1.0
+    version: 0.1.1
     repository: "file://../content-chart"
     condition: content-chart.enabled
   - name: quiz-chart
     version: 0.1.0
     repository: "file://../quiz-chart"
     condition: quiz-chart.enabled
+  - name: gateway-chart
+    version: 0.1.0
+    repository: "file://../gateway-chart"
+    condition: gateway-chart.enabled
+  - name: frontend-chart
+    version: 0.1.0
+    repository: "file://../frontend-chart"
+    condition: frontend-chart.enabled

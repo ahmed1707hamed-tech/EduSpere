@@ -1,4 +1,13 @@
 dependencies:
+- name: postgres-chart
+  repository: file://../postgres-chart
+  version: 0.1.0
+- name: redis-chart
+  repository: file://../redis-chart
+  version: 0.1.0
+- name: minio-chart
+  repository: file://../minio-chart
+  version: 0.1.0
 - name: auth-chart
   repository: file://../auth-chart
   version: 0.1.0
@@ -7,9 +16,15 @@ dependencies:
   version: 0.1.0
 - name: content-chart
   repository: file://../content-chart
-  version: 0.1.0
+  version: 0.1.1
 - name: quiz-chart
   repository: file://../quiz-chart
   version: 0.1.0
-digest: sha256:656adc42f25d034cfee3b859b0823b7f5d309dbeef03886510a60f5978a83a06
-generated: "2026-07-06T11:30:45.8579022+03:00"
+- name: gateway-chart
+  repository: file://../gateway-chart
+  version: 0.1.0
+- name: frontend-chart
+  repository: file://../frontend-chart
+  version: 0.1.0
+digest: sha256:7d9b705dc59e213a228abf0b0818f2b4a752a9e6f4b8ebfa3a9f6e73b8225f00
+generated: "2026-07-06T13:01:09.1588938+03:00"
