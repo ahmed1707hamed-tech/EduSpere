@@ -1,167 +1,255 @@
-# EduSphere - Microservices Learning Management System (LMS)
+# 🎓 EduSphere
 
-EduSphere is a production-ready, cloud-native Learning Management System (LMS) built with a Microservices architecture. It is designed to demonstrate modern software engineering patterns, clean architecture, and enterprise-grade DevOps practices (infrastructure as code, container orchestration, GitOps, and observability).
+> **Enterprise Cloud-Native Learning Management System**
 
----
+```{=html}
+<p align="center">
+```
+![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?logo=kubernetes)
+![Helm](https://img.shields.io/badge/Helm-0F1689?logo=helm)
+![Terraform](https://img.shields.io/badge/Terraform-7B42BC?logo=terraform)
+![Ansible](https://img.shields.io/badge/Ansible-EE0000?logo=ansible)
+![AWS](https://img.shields.io/badge/AWS-232F3E?logo=amazonaws) ![GitHub
+Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=githubactions)
+![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?logo=prometheus)
+![Grafana](https://img.shields.io/badge/Grafana-F46800?logo=grafana)
+![Loki](https://img.shields.io/badge/Loki-2C3E50)
 
-## Architecture Overview
-
-EduSphere is split into 4 independent backend microservices, a unified single-page frontend, and shared infrastructure components.
-
-```mermaid
-graph TD
-    User([User Browser]) -->|HTTP/HTTPS: Port 80| Nginx[Nginx API Gateway]
-    
-    subgraph Frontend
-        Nginx -->|/ | ReactApp[React + Vite Frontend]
-     font-family: Inter, sans-serif;
-    end
-
-    subgraph Backend Microservices
-        Nginx -->|/api/auth/*| AuthService[Auth Service :8001]
-        Nginx -->|/api/courses/*| CourseService[Course Service :8002]
-        Nginx -->|/api/content/*| ContentService[Content Service :8003]
-        Nginx -->|/api/quizzes/*| QuizService[Quiz Service :8004]
-    end
-
-    subgraph Datastores & Storage
-        AuthService -->|Postgres| DB_Auth[(auth_db)]
-        CourseService -->|Postgres| DB_Course[(course_db)]
-        QuizService -->|Postgres| DB_Quiz[(quiz_db)]
-        ContentService -->|Postgres| DB_Content[(content_db)]
-        
-        CourseService -->|Cache| RedisCache[(Redis)]
-        QuizService -->|Cache| RedisCache
-        
-        ContentService -->|Upload/Presign| S3Storage[(MinIO / AWS S3)]
-    end
+```{=html}
+</p>
 ```
 
-### Technology Stack
-- **Frontend**: React, Vite, TypeScript, TailwindCSS, Lucide Icons, Recharts.
-- **Backend**: Python, FastAPI, SQLAlchemy (2.0), Pydantic (V2).
-- **Datastores**: PostgreSQL (relational database), Redis (session & cache).
-- **Storage**: MinIO (local S3-compatible) / AWS S3 (production).
-- **Gateway / Proxy**: Nginx.
-- **Containerization**: Docker, Docker Compose.
+------------------------------------------------------------------------
 
----
+## 📖 Overview
 
-## Microservices Breakdown
+EduSphere is a production-ready **Cloud-Native Learning Management
+System (LMS)** built with a microservices architecture and modern DevOps
+practices. The project demonstrates how to design, containerize, deploy,
+automate, monitor, and manage scalable applications on AWS using
+Infrastructure as Code and Kubernetes.
 
-### 1. Auth Service (Port 8001)
-Responsible for user account lifecycle, security, and access control.
-- **Endpoints**:
-  - `POST /auth/register` - Create a new user account (Student or Instructor).
-  - `POST /auth/login` - Authenticate and return JWT access and refresh tokens.
-  - `POST /auth/refresh` - Issue a new access token using a refresh token.
-  - `GET /auth/me` - Fetch the current authenticated user's profile.
-  - `PUT /auth/me` - Update profile information.
-  - `POST /auth/change-password` - Update account password.
-  - `GET /auth/users` - Admin-only list of all registered users.
+------------------------------------------------------------------------
 
-### 2. Course Service (Port 8002)
-Handles course catalog, modules, lessons, and student enrollment records.
-- **Endpoints**:
-  - `GET /courses/` - List all published courses (supports search and category filters).
-  - `POST /courses/` - Create a new course (Instructor/Admin only).
-  - `GET /courses/{id}` - Fetch course details, including module and lesson metadata.
-  - `PUT /courses/{id}` - Update course details (Instructor/Admin only).
-  - `POST /courses/{id}/enroll` - Enroll in a course (Student/Instructor/Admin).
-  - `GET /courses/enrolled/me` - List courses the current user is enrolled in.
-  - `POST /courses/{id}/modules` - Add a module to a course (Instructor/Admin only).
-  - `POST /courses/modules/{id}/lessons` - Add a lesson to a module (Instructor/Admin only).
+# 🏗️ System Architecture
 
-### 3. Content Service (Port 8003)
-Manages file uploads (videos, PDFs, images) to S3/MinIO and generates secure pre-signed URLs.
-- **Endpoints**:
-  - `POST /content/upload` - Upload raw files (Instructor/Admin only).
-  - `GET /content/url/{media_id}` - Generate a temporary secure pre-signed GET URL for course material consumption.
-  - `DELETE /content/{media_id}` - Delete a file from S3 and metadata from DB (Instructor/Admin only).
-  - `GET /content/my-files` - List files uploaded by the current instructor.
+```{=html}
+<p align="center">
+```
+`<img src="./docs/screenshots/EduSphere_Architecture.png" alt="EduSphere Architecture" width="100%">`{=html}
+```{=html}
+</p>
+```
 
-### 4. Quiz & Progress Service (Port 8004)
-Tracks lesson completion, administers quizzes, grades attempts, and issues certificates.
-- **Endpoints**:
-  - `POST /quizzes/` - Create a quiz for a course (Instructor/Admin only).
-  - `GET /quizzes/course/{course_id}` - List quizzes for a course.
-  - `GET /quizzes/{id}` - Fetch quiz questions (automatically hides correct answers for students).
-  - `POST /quizzes/{id}/questions` - Add questions and options (Instructor/Admin only).
-  - `POST /quizzes/{id}/submit` - Submit quiz answers for grading (grades instantly, auto-issues certificate on passing).
-  - `POST /quizzes/progress` - Mark a lesson as completed.
-  - `GET /quizzes/progress/completed` - List completed lesson IDs for the current student.
-  - `GET /quizzes/certificates/me` - List certificates earned by the current student.
+------------------------------------------------------------------------
 
----
+# ✨ Key Features
 
-## Local Development (Getting Started)
+-   🔐 JWT Authentication & Role-Based Access Control
+-   📚 Course Management
+-   📝 Quiz & Progress Tracking
+-   📄 Certificate Generation
+-   📂 Content Management
+-   🧩 Microservices Architecture
+-   🐳 Docker Containerization
+-   ☸️ Kubernetes Deployment
+-   📦 Helm Charts
+-   ☁️ AWS Cloud Deployment
+-   🏗️ Infrastructure as Code (Terraform)
+-   ⚙️ Configuration Management (Ansible)
+-   🚀 CI/CD with GitHub Actions
+-   📊 Monitoring with Prometheus & Grafana
+-   📝 Centralized Logging with Loki
 
-### Prerequisites
-- [Docker](https://www.docker.com/products/docker-desktop) (with Docker Compose)
+------------------------------------------------------------------------
 
-### Running the Stack
-1. Clone the repository and navigate to the root directory:
-   ```bash
-   cd EduSphere
-   ```
-2. Start all services in the background using Docker Compose:
-   ```bash
-   docker-compose up --build -d
-   ```
-3. Once the build completes and services are healthy:
-   - Access the **EduSphere Frontend** at `http://localhost`.
-   - Access **MinIO Object Storage Console** at `http://localhost:9001` (Credentials: `minioadmin` / `minioadmin`).
-   - The API Swagger documentations are available at:
-     - Auth Service: `http://localhost/api/auth/docs`
-     - Course Service: `http://localhost/api/courses/docs`
-     - Content Service: `http://localhost/api/content/docs`
-     - Quiz Service: `http://localhost/api/quizzes/docs`
+# 🛠️ Technology Stack
 
----
+  Category          Technologies
+  ----------------- ---------------------------
+  Backend           Python, FastAPI
+  Frontend          React, Tailwind CSS
+  Database          PostgreSQL
+  Cache             Redis
+  Containers        Docker, Docker Compose
+  Orchestration     Kubernetes (k3s), Helm
+  IaC               Terraform
+  Configuration     Ansible
+  Monitoring        Prometheus, Grafana, Loki
+  Cloud             AWS EC2, VPC, S3
+  CI/CD             GitHub Actions
+  Version Control   Git, GitHub
 
-## Testing
+------------------------------------------------------------------------
 
-Each microservice contains a unit and integration test suite using `pytest` and an in-memory SQLite database.
+# 📂 Repository Structure
 
-To run tests locally for a service (e.g., Auth Service):
-1. Navigate to the service directory:
-   ```bash
-   cd services/auth-service
-   ```
-2. Create and activate a virtual environment, install requirements, and run pytest:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Or venv\Scripts\activate on Windows
-   pip install -r requirements.txt
-   pytest
-   ```
+``` text
+EduSphere
+├── .github/
+├── database/
+├── docs/
+│   └── screenshots/
+│       └── EduSphere_Architecture.png
+├── frontend/
+├── helm/
+├── infrastructure/
+├── kubernetes/
+├── monitoring/
+├── scripts/
+├── services/
+├── terraform/
+├── docker-compose.yml
+├── Makefile
+└── README.md
+```
 
----
+------------------------------------------------------------------------
 
-## Production & Cloud Deployment (DevOps Ready)
+# 🧩 Microservices
 
-EduSphere is designed to be easily deployed to public clouds (such as AWS) using modern DevOps tooling.
+-   Authentication Service
+-   Course Management Service
+-   Content Service
+-   Quiz & Progress Service
+-   Notification Service
+-   API Gateway
 
-### 1. Kubernetes & Helm
-Preconfigured directories are provided under `kubernetes/` and `helm/` for orchestrating the application on a Kubernetes cluster (e.g., AWS EKS):
-- Deployments, Services, ConfigMaps, Secrets, Ingress, and Horizontal Pod Autoscalers (HPA).
-- A unified Helm chart is located under [helm/edusphere](file:///e:/Projects/EduSphere/helm/edusphere) to deploy the entire stack with a single command:
-  ```bash
-  helm install edusphere ./helm/edusphere -f values.yaml
-  ```
+------------------------------------------------------------------------
 
-### 2. Infrastructure as Code (Terraform)
-Located under [infrastructure/terraform](file:///e:/Projects/EduSphere/infrastructure/terraform):
-- Provisions AWS EKS (Elastic Kubernetes Service).
-- Provisions AWS RDS (PostgreSQL) and AWS ElastiCache (Redis) instances.
-- Provisions AWS S3 Buckets for secure course media storage.
-- Configures IAM Roles for Service Accounts (IRSA) to grant secure S3 access to the `content-service` pod.
+# ☁️ Infrastructure
 
-### 3. CI/CD (GitHub Actions & Argo CD)
-- GitHub Actions workflows under `.github/workflows/` automate building Docker images, running tests, pushing to Amazon ECR, and updating Helm values.
-- Ready for GitOps deployment via **Argo CD** by pointing to the `kubernetes/` or `helm/` directory.
+-   AWS EC2
+-   VPC
+-   Public & Private Networking
+-   Security Groups
+-   Amazon S3
+-   Route Tables
+-   Internet Gateway
 
-### 4. Observability (Prometheus, Grafana, Loki)
-The application is pre-instrumented for monitoring:
-- Health check endpoints (`/health`) are exposed on all microservices.
-- Docker Compose includes logging configurations ready to be scraped by Promtail and aggregated in Grafana Loki.
+Provisioned using **Terraform**.
+
+------------------------------------------------------------------------
+
+# 🐳 Containerization
+
+Each microservice is packaged using Docker with its own Dockerfile.
+Docker Compose is used for local development and integration testing.
+
+------------------------------------------------------------------------
+
+# ☸️ Kubernetes
+
+Deployment resources include:
+
+-   Deployments
+-   Services
+-   ConfigMaps
+-   Secrets
+-   Ingress
+-   Helm Charts
+
+------------------------------------------------------------------------
+
+# ⚙️ Configuration Management
+
+Infrastructure configuration and provisioning are automated using
+**Ansible** roles and playbooks.
+
+------------------------------------------------------------------------
+
+# 🚀 CI/CD Pipeline
+
+``` text
+Developer
+    │
+    ▼
+GitHub Repository
+    │
+    ▼
+GitHub Actions
+    │
+    ▼
+Build Docker Images
+    │
+    ▼
+Deploy using Helm
+    │
+    ▼
+Kubernetes Cluster
+```
+
+------------------------------------------------------------------------
+
+# 📊 Monitoring & Logging
+
+-   Prometheus
+-   Grafana
+-   Loki
+
+Metrics monitored:
+
+-   CPU Usage
+-   Memory Usage
+-   Pod Health
+-   Application Logs
+-   Resource Utilization
+
+------------------------------------------------------------------------
+
+# 🔐 Security
+
+-   JWT Authentication
+-   RBAC
+-   Kubernetes Secrets
+-   Environment Variables
+-   Secure Docker Images
+-   Least Privilege Access
+
+------------------------------------------------------------------------
+
+# ⚡ Getting Started
+
+``` bash
+git clone https://github.com/ahmed1707hamed-tech/EduSphere.git
+cd EduSphere
+docker compose up -d
+```
+
+Deploy to Kubernetes:
+
+``` bash
+helm install edusphere ./helm
+```
+
+------------------------------------------------------------------------
+
+# 📈 Future Improvements
+
+-   Horizontal Pod Autoscaling
+-   Argo CD GitOps
+-   SonarQube Integration
+-   Trivy Image Scanning
+-   AWS EKS Production Deployment
+
+------------------------------------------------------------------------
+
+# 👨‍💻 Author
+
+**Ahmed Mohammed Hamed**
+
+Cloud & DevOps Engineer
+
+-   Faculty of Computers and Information
+-   Mansoura University
+
+GitHub: https://github.com/ahmed1707hamed-tech
+
+LinkedIn: https://www.linkedin.com/in/ahmed-hamed-340570364?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app
+
+------------------------------------------------------------------------
+
+⭐ If you found this project useful, consider giving it a star!
