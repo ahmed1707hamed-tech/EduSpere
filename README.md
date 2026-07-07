@@ -33,15 +33,13 @@ Infrastructure as Code and Kubernetes.
 
 ------------------------------------------------------------------------
 
-# 🏗️ System Architecture
-
+## 🏗️ System Architecture
 
 <p align="center">
-```
-`<img src="./docs/screenshots/EduSphere_Architecture.png" alt="EduSphere Architecture" width="100%">`{=html}
-```{=html}
+  <img src="./docs/screenshots/EduSphere_Architecture.png" alt="EduSphere Architecture" width="100%">
 </p>
 
+The diagram below illustrates the complete cloud-native architecture of EduSphere, including the AWS infrastructure, Kubernetes cluster, CI/CD pipeline, monitoring stack, and communication between microservices.
 ------------------------------------------------------------------------
 
 # ✨ Key Features
