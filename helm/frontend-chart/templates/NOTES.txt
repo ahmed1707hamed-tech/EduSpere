@@ -1,0 +1,11 @@
+Frontend deployed.
+
+Service DNS: frontend:{{ .Values.service.port }}
+Cluster DNS: frontend.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+{{- if .Values.ingress.enabled }}
+Ingress: http://{{ .Values.ingress.host }}{{ .Values.ingress.path }}
+{{- end }}
+
+Check status:
+  kubectl get deployment --namespace {{ .Release.Namespace }} frontend

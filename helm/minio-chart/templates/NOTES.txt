@@ -1,0 +1,9 @@
+MinIO has been deployed.
+
+API DNS: minio:{{ .Values.service.apiPort }}
+Console DNS: minio:{{ .Values.service.consolePort }}
+S3 Endpoint: http://minio:{{ .Values.service.apiPort }}
+
+Check status:
+  kubectl get deployment --namespace {{ .Release.Namespace }} minio
+  kubectl get pvc --namespace {{ .Release.Namespace }} {{ include "minio-chart.pvcName" . }}

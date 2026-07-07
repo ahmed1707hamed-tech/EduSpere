@@ -1,0 +1,128 @@
+replicaCount: 2
+
+nameOverride: auth-service
+fullnameOverride: auth-service
+
+image:
+  repository: ahmed7amed9/edusphere-auth-service
+  tag: latest
+  pullPolicy: Always
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+service:
+  type: ClusterIP
+  port: 8001
+  targetPort: http
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: null
+
+ingress:
+  enabled: false
+  className: traefik
+  host: edusphere.local
+  path: /auth
+  pathType: Prefix
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+  tls: []
+
+config:
+  create: true
+  name: app-config
+  data:
+    APP_ENV: production
+    LOG_LEVEL: info
+    DATABASE_HOST: postgres.edusphere.svc.cluster.local
+    DATABASE_PORT: "5432"
+    REDIS_HOST: redis.edusphere.svc.cluster.local
+    REDIS_PORT: "6379"
+    REDIS_URL: redis://redis.edusphere.svc.cluster.local:6379/0
+    AUTH_SERVICE_URL: http://auth-service:8001
+    COURSE_SERVICE_URL: http://course-service:8002
+    CONTENT_SERVICE_URL: http://content-service:8003
+    QUIZ_SERVICE_URL: http://quiz-service:8004
+    NOTIFICATION_SERVICE_URL: http://notification-service:8005
+    S3_ENDPOINT_URL: http://minio.edusphere.svc.cluster.local:9000
+    S3_BUCKET: edusphere-content
+    S3_REGION: us-east-1
+
+secret:
+  create: true
+  name: app-secret
+  data:
+    SECRET_KEY: replace-with-a-secure-jwt-key
+    INTERNAL_API_KEY: replace-with-service-to-service-secret
+    DATABASE_USER: postgres
+    DATABASE_PASSWORD: change-me
+    AUTH_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/auth_db
+    COURSE_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/course_db
+    CONTENT_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/content_db
+    QUIZ_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/quiz_db
+    NOTIFICATION_DATABASE_URL: postgresql://postgres:change-me@postgres.edusphere.svc.cluster.local:5432/notification_db
+    MINIO_ROOT_USER: minioadmin
+    MINIO_ROOT_PASSWORD: change-me-minio-password
+
+env: []
+envFrom:
+  - configMapRef:
+      name: app-config
+
+secretEnv:
+  - name: DATABASE_URL
+    key: AUTH_DATABASE_URL
+  - name: SECRET_KEY
+    key: SECRET_KEY
+  - name: INTERNAL_API_KEY
+    key: INTERNAL_API_KEY
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 40
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+terminationGracePeriodSeconds: 30
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}

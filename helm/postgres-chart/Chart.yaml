@@ -1,0 +1,12 @@
+apiVersion: v2
+name: postgres-chart
+description: Helm chart for EduSphere PostgreSQL database
+type: application
+version: 0.1.0
+appVersion: "16"
+keywords:
+  - edusphere
+  - postgres
+  - database
+maintainers:
+  - name: EduSphere Team

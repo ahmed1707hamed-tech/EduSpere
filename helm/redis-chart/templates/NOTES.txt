@@ -1,0 +1,8 @@
+Redis has been deployed.
+
+Service DNS: redis:{{ .Values.service.port }}
+Cluster DNS: redis.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+Connection URL: redis://redis:{{ .Values.service.port }}/0
+
+Check status:
+  kubectl get deployment --namespace {{ .Release.Namespace }} redis

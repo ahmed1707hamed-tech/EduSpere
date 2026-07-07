@@ -1,0 +1,98 @@
+replicaCount: 1
+
+nameOverride: postgres
+fullnameOverride: postgres
+
+image:
+  repository: postgres
+  tag: 16-alpine
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+service:
+  type: ClusterIP
+  port: 5432
+  targetPort: postgres
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+config:
+  create: true
+  name: postgres-init
+  data:
+    01-init.sql: |
+      CREATE DATABASE auth_db;
+      CREATE DATABASE course_db;
+      CREATE DATABASE content_db;
+      CREATE DATABASE quiz_db;
+      CREATE DATABASE notification_db;
+
+secret:
+  create: true
+  name: postgres-secret
+  data:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: change-me
+
+env:
+  - name: POSTGRES_DB
+    value: postgres
+  - name: PGDATA
+    value: /var/lib/postgresql/data/pgdata
+
+persistence:
+  enabled: true
+  existingClaim: ""
+  name: postgres-pvc
+  storageClass: standard
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+  mountPath: /var/lib/postgresql/data
+  initMountPath: /docker-entrypoint-initdb.d
+
+livenessProbe:
+  exec:
+    command:
+      - pg_isready
+      - -U
+      - postgres
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  exec:
+    command:
+      - pg_isready
+      - -U
+      - postgres
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+strategy:
+  type: Recreate
+
+terminationGracePeriodSeconds: 30
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}

@@ -1,0 +1,12 @@
+apiVersion: v2
+name: frontend-chart
+description: Helm chart for the EduSphere student frontend
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - edusphere
+  - frontend
+  - ui
+maintainers:
+  - name: EduSphere Team

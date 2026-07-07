@@ -1,0 +1,11 @@
+PostgreSQL has been deployed.
+
+Service DNS: {{ include "postgres-chart.fullname" . }}:{{ .Values.service.port }}
+Cluster DNS: {{ include "postgres-chart.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Check status:
+  kubectl get deployment --namespace {{ .Release.Namespace }} {{ include "postgres-chart.fullname" . }}
+  kubectl get pvc --namespace {{ .Release.Namespace }} {{ include "postgres-chart.pvcName" . }}
+
+Connect from a pod:
+  kubectl run psql-client --rm -it --image=postgres:16-alpine --namespace {{ .Release.Namespace }} -- psql -h {{ include "postgres-chart.fullname" . }} -U postgres

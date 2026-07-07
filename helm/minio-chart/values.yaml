@@ -1,0 +1,89 @@
+replicaCount: 1
+
+nameOverride: minio
+fullnameOverride: minio
+
+image:
+  repository: minio/minio
+  tag: RELEASE.2025-04-22T22-12-26Z
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+service:
+  type: ClusterIP
+  apiPort: 9000
+  consolePort: 9001
+  apiTargetPort: api
+  consoleTargetPort: console
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+config:
+  create: false
+  name: minio-config
+  data: {}
+
+secret:
+  create: true
+  name: minio-secret
+  data:
+    MINIO_ROOT_USER: minioadmin
+    MINIO_ROOT_PASSWORD: change-me-minio-password
+
+args:
+  - server
+  - /data
+  - --console-address
+  - ":9001"
+
+persistence:
+  enabled: true
+  existingClaim: ""
+  name: minio-pvc
+  storageClass: standard
+  accessModes:
+    - ReadWriteOnce
+  size: 20Gi
+  mountPath: /data
+
+livenessProbe:
+  httpGet:
+    path: /minio/health/live
+    port: api
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /minio/health/ready
+    port: api
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+strategy:
+  type: Recreate
+
+terminationGracePeriodSeconds: 30
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}

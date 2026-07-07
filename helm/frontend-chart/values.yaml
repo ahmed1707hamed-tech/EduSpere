@@ -1,0 +1,91 @@
+replicaCount: 2
+
+nameOverride: frontend
+fullnameOverride: frontend
+
+image:
+  repository: ahmed7amed9/edusphere-frontend
+  tag: latest
+  pullPolicy: Always
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: http
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: null
+
+ingress:
+  enabled: false
+  className: traefik
+  host: edusphere.local
+  path: /
+  pathType: Prefix
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+  tls: []
+
+config:
+  create: false
+  name: frontend-config
+  data: {}
+
+secret:
+  create: false
+  name: frontend-secret
+  data: {}
+
+env: []
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 15
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+terminationGracePeriodSeconds: 30
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}

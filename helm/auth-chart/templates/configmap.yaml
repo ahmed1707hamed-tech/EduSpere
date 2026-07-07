@@ -1,0 +1,13 @@
+{{- if .Values.config.create }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "auth-chart.configMapName" . }}
+  labels:
+    {{- include "auth-chart.labels" . | nindent 4 }}
+    app.kubernetes.io/name: app-config
+data:
+  {{- range $key, $value := .Values.config.data }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{- end }}

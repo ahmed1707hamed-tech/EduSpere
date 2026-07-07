@@ -1,0 +1,12 @@
+apiVersion: v2
+name: minio-chart
+description: Helm chart for EduSphere MinIO object storage
+type: application
+version: 0.1.0
+appVersion: "2025.04.22"
+keywords:
+  - edusphere
+  - minio
+  - storage
+maintainers:
+  - name: EduSphere Team

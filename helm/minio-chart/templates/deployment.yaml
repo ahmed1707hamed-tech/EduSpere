@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "minio-chart.fullname" . }}
+  labels:
+    {{- include "minio-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "minio-chart.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: {{ .Values.strategy.type }}
+  template:
+    metadata:
+      labels:
+        {{- include "minio-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "minio-chart.serviceAccountName" . }}
+      containers:
+        - name: {{ include "minio-chart.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            {{- toYaml .Values.args | nindent 12 }}
+          ports:
+            - name: api
+              containerPort: {{ .Values.service.apiPort }}
+              protocol: TCP
+            - name: console
+              containerPort: {{ .Values.service.consolePort }}
+              protocol: TCP
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "minio-chart.secretName" . }}
+                  key: MINIO_ROOT_USER
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "minio-chart.secretName" . }}
+                  key: MINIO_ROOT_PASSWORD
+          volumeMounts:
+            - name: minio-data
+              mountPath: {{ .Values.persistence.mountPath }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: minio-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "minio-chart.pvcName" .) }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
