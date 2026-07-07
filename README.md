@@ -16,7 +16,6 @@
 Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=githubactions)
 ![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?logo=prometheus)
 ![Grafana](https://img.shields.io/badge/Grafana-F46800?logo=grafana)
-![Loki](https://img.shields.io/badge/Loki-2C3E50)
 
 ```{=html}
 </p>
@@ -36,13 +35,12 @@ Infrastructure as Code and Kubernetes.
 
 # 🏗️ System Architecture
 
-```{=html}
+
 <p align="center">
 ```
 `<img src="./docs/screenshots/EduSphere_Architecture.png" alt="EduSphere Architecture" width="100%">`{=html}
 ```{=html}
 </p>
-```
 
 ------------------------------------------------------------------------
 
